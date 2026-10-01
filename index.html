@@ -28,7 +28,17 @@
     .storage-tools,.quick-actions,.topic-check-tools{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.storage-status{font-size:13px;color:var(--green);min-height:1.4em}.availability{padding:10px 12px;border-radius:12px;background:var(--teal2);font-weight:700}.availability.warn{background:color-mix(in srgb,var(--orange) 16%,var(--paper));color:var(--orange)}.tab:focus-visible,.answer:focus-visible,.topic button:focus-visible{outline:3px solid color-mix(in srgb,var(--yellow) 80%,transparent);outline-offset:3px}.range-with-number{display:grid;grid-template-columns:1fr 74px;gap:10px;align-items:center}.range-number{width:100%;border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:10px;padding:7px}.mobile-help{display:none}.continue-card{border-right:4px solid var(--teal)}button:disabled,select option:disabled{opacity:.48;cursor:not-allowed}
     @media(max-width:600px){.tools #about{display:inline-flex}.top .tools{flex-wrap:wrap;justify-content:flex-end}.filters{position:sticky;top:68px;z-index:5;background:var(--bg);padding-top:8px}.catalog-head{position:sticky;top:68px;z-index:4;background:var(--bg);padding-top:8px}.topic-checks .check-row{max-height:230px;overflow:auto}.modal-body{scroll-padding-top:130px}}
 </style>
-<style>.math{direction:ltr;unicode-bidi:isolate;display:inline-block}input[type=number]{max-width:100%}svg text{unicode-bidi:plaintext}details{padding:12px 0}summary{cursor:pointer;font-weight:700}</style></head>
+<style>.math{direction:ltr;unicode-bidi:isolate;display:inline-block}input[type=number]{max-width:100%}svg text{unicode-bidi:plaintext}details{padding:12px 0}summary{cursor:pointer;font-weight:700}</style><style>/* Bidirectional math: Hebrew stays RTL; each complete math run is an LTR isolate. */
+.math-inline{direction:ltr;unicode-bidi:isolate;display:inline-block;font:inherit;max-width:100%;vertical-align:baseline}
+svg text{direction:ltr;unicode-bidi:plaintext}
+.vexpr,.vrow,.vtab,.labtable{direction:ltr;unicode-bidi:isolate}
+.measure span{direction:ltr;unicode-bidi:isolate;display:inline-block}
+/* Fraction bars 2026-10-01: real numerator-over-denominator display for A/B in math runs. */
+.frac{display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;direction:ltr;unicode-bidi:isolate;text-align:center;margin:0 .14em;line-height:1.2;white-space:nowrap;font-variant-numeric:lining-nums}
+.frac>.num{display:block;padding:0 .28em .1em;border-bottom:.09em solid currentColor}
+.frac>.den{display:block;padding:.1em .28em 0}
+.frac .frac{font-size:.9em}
+</style></head>
 <body>
   <a class="skip" href="#catalog">דלגו לקטלוג הנושאים</a>
   <header><div class="wrap top">
@@ -775,6 +785,120 @@ labTemplate=function(type){let v=oldGeoTemplate(type);if(type==='area')v+=`<div 
 const oldGeoBind=bindLab;bindLab=function(type){oldGeoBind(type);if(type==='area'){const draw=()=>{let d=+$('#partialOffset').value,b=18-d,x=55+d/18*390;$('#partialSvg').innerHTML=`<rect x="55" y="40" width="390" height="120" fill="none" stroke="var(--teal)" stroke-width="3"/><polygon points="${x},160 445,160 ${(x+445)/2},40" fill="var(--orange)" opacity=".7"/><line x1="${(x+445)/2}" y1="40" x2="${(x+445)/2}" y2="160" stroke="var(--ink)" stroke-dasharray="5 5"/><text x="250" y="25" text-anchor="middle" fill="var(--ink)">18 ס״מ</text><text x="75" y="195" fill="var(--ink)">קטע ${d}</text><text x="290" y="195" fill="var(--ink)">בסיס ${b}</text>`;$('#partialOut').innerHTML=`בסיס = 18−${d} = ${b}. גובה = 4.<br>שטח מלבן: 72; שטח משולש: ${b}×4÷2=${2*b}.<br>יחס מלבן:משולש = 72:${2*b}. ${d===0?'רק כאן הבסיסים שווים והיחס 2:1.':'כאן הבסיסים שונים ולכן היחס אינו 2:1.'}`};$('#partialOffset').oninput=draw;draw()};if(type==='similarity'){const draw=()=>{let f=+$('#squareAreaFactor').value,k=Math.sqrt(f),keep=$('#keepPerimeter').checked;let side=38*k,hexR=(keep?(38*2/3)*k:(38*2/3));let pts=Array.from({length:6},(_,i)=>`${355+hexR*Math.cos(i*Math.PI/3)},${130+hexR*Math.sin(i*Math.PI/3)}`).join(' ');$('#squareCompare').innerHTML=`<rect x="50" y="${155-side}" width="${side}" height="${side}" fill="none" stroke="var(--teal)" stroke-width="4"/><polygon points="${pts}" fill="none" stroke="var(--orange)" stroke-width="4"/><text x="120" y="200" text-anchor="middle" fill="var(--ink)">צלע ${ (12*k).toFixed(2) }</text><text x="355" y="200" text-anchor="middle" fill="var(--ink)">צלע ${(8*(keep?k:1)).toFixed(2)}</text>`;$('#squareOut').innerHTML=`שטח הריבוע פי ${f}; צלעו פי √${f}=${k.toFixed(2)}.<br>${keep?'גם צלע המשושה גדלה באותו גורם. היחס נשאר 3:2.':`המשושה קבוע: היחס הוא ${(3*k).toFixed(2)}:2, ולא בהכרח 3:2.`}`};$('#squareAreaFactor').oninput=draw;$('#keepPerimeter').onchange=draw;draw()}};
 topics.find(t=>t.id==='area').concepts.push(['משולש במלבן עם בסיס חלקי','מוצאים את בסיס המשולש בחיסור הקטע החיצוני. הגובה הוא גובה המלבן, אך הבסיס אינו בהכרח אורכו.']);topics.find(t=>t.id==='similarity').concepts.push(['היקפים שווים לאחר שינוי','יחס צלע ריבוע:משושה הוא 3:2 כל עוד היקפיהם שווים. הגדלת הריבוע בלבד מבטלת את התנאי; הגדלת שטח פי x משנה את צלעו פי √x.']);
 
+</script>
+<script>
+/* Math direction fix 2026-10-01 (ported from Algebrica; adds geometry symbols). Keep bank strings/answers/IDs unchanged.
+   Wrap text nodes, not entire Hebrew paragraphs. textContent remains identical,
+   so grading, progress exports and assignment imports retain their contracts. */
+(()=>{
+  const run=/[A-Za-z0-9\u00b2\u00b3\u03c0\u221a\u221e\u2220\u25b3(+\-\u2212][A-Za-z0-9\u00b2\u00b3\u03c0\u221a\u221e\s.,:;=+\-\u2212\u00d7\u00f7\u00b7*/^%!?<>\u00b0\u2220\u25b3\u2225\u22a5\u2248\u2260\u2264\u2265\u2192\u2190\u21d2()\[\]{}]*/g;
+  function isolate(root){
+    if(root.nodeType!==1&&root.nodeType!==3)return;
+    if(root.nodeType===1&&root.closest('script,style,textarea,input,select,option,svg,bdi,.math,.math-inline'))return;
+    const nodes=[];
+    if(root.nodeType===3)nodes.push(root);
+    else{const walk=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while(walk.nextNode())nodes.push(walk.currentNode);}
+    for(const node of nodes){
+      if(!node.parentElement||node.parentElement.closest('script,style,textarea,input,select,option,svg,bdi,.math,.math-inline'))continue;
+      const value=node.nodeValue,parts=[];let last=0;run.lastIndex=0;
+      for(const match of value.matchAll(run)){
+        // Sentence punctuation and spaces belong to the surrounding Hebrew run.
+        const math=match[0].replace(/[\s.,:;!?]+$/u,'');if(!math)continue;
+        parts.push(document.createTextNode(value.slice(last,match.index)));
+        const span=document.createElement('bdi');span.dir='ltr';span.className='math-inline';span.textContent=math;parts.push(span);last=match.index+math.length;
+      }
+      if(!parts.length)continue;parts.push(document.createTextNode(value.slice(last)));
+      const fragment=document.createDocumentFragment();fragment.append(...parts);node.replaceWith(fragment);
+    }
+  }
+  isolate(document.body);
+  new MutationObserver(records=>{
+    for(const record of records){
+      if(record.type==='characterData')isolate(record.target);
+      else for(const node of record.addedNodes)isolate(node);
+    }
+  }).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
+</script>
+<script>
+/* Fraction bars 2026-10-01. Display only: bank strings, answers, IDs, saved progress and tracking are untouched.
+   A/B inside an LTR math run (.math-inline / .math) is shown as numerator over denominator with a bar. */
+(()=>{
+  const SKIP='script,style,textarea,input,select,option,svg,.frac';
+  const atomRe=/^(?:\d+(?:\.\d+)?|[A-Za-z]|[\u00b2\u00b3\u03c0\u221a\u221e\u00b0]|\^[\u2212-]?\w+)/;
+  function tokenize(s){
+    const t=[];let i=0;
+    while(i<s.length){
+      const c=s[i];
+      if(c==='('){let d=0,j=i;for(;j<s.length;j++){if(s[j]==='(')d++;else if(s[j]===')'){d--;if(!d)break}}
+        if(j<s.length){t.push({k:'g',v:s.slice(i+1,j)});i=j+1;continue}}
+      const m=atomRe.exec(s.slice(i));
+      if(m){t.push({k:'a',v:m[0]});i+=m[0].length;continue}
+      t.push({k:c==='/'?'s':'o',v:c});i++;
+    }
+    return t;
+  }
+  function plain(tok){return tok.map(x=>x.k==='g'?'('+x.v+')':x.v).join('')}
+  function render(str){ // returns array of Nodes
+    const toks=tokenize(str);
+    if(!toks.some(x=>x.k==='s')&&!toks.some(x=>x.k==='g'&&x.v.includes('/')))return [document.createTextNode(str)];
+    const out=[];let buf='';
+    const flush=()=>{if(buf){out.push(document.createTextNode(buf));buf=''}};
+    const term=(a,b)=>{const r=[];let i=a;while(i<b){r.push(toks[i]);i++}return r};
+    const termNodes=(tt,strip)=>{
+      if(strip&&tt.length===1&&tt[0].k==='g')return render(tt[0].v);
+      const res=[];let b2='';
+      for(const x of tt){
+        if(x.k==='g'){if(b2){res.push(document.createTextNode(b2));b2=''}
+          res.push(document.createTextNode('('),...render(x.v),document.createTextNode(')'))}
+        else b2+=x.v;
+      }
+      if(b2)res.push(document.createTextNode(b2));
+      return res;
+    };
+    let i=0;
+    while(i<toks.length){
+      const x=toks[i];
+      if(x.k==='a'||x.k==='g'){
+        let j=i;while(j<toks.length&&(toks[j].k==='a'||toks[j].k==='g'))j++;
+        if(j<toks.length&&toks[j].k==='s'&&j+1<toks.length&&(toks[j+1].k==='a'||toks[j+1].k==='g')){
+          let e=j+1;while(e<toks.length&&(toks[e].k==='a'||toks[e].k==='g'))e++;
+          const numT=term(i,j),denT=term(j+1,e);
+          flush();
+          const f=document.createElement('span');f.className='frac';f.setAttribute('role','math');
+          f.setAttribute('aria-label',plain(numT)+' / '+plain(denT));
+          const n=document.createElement('span');n.className='num';n.append(...termNodes(numT,true));
+          const d=document.createElement('span');d.className='den';d.append(...termNodes(denT,true));
+          f.append(n,d);out.push(f);i=e;continue;
+        }
+        // not a fraction operand: keep text, but still convert fractions inside groups
+        if(x.k==='g'&&x.v.includes('/')){flush();out.push(document.createTextNode('('),...render(x.v),document.createTextNode(')'))}
+        else if(x.k==='g')buf+='('+x.v+')';else buf+=x.v;
+        i++;continue;
+      }
+      buf+=x.v;i++;
+    }
+    flush();return out;
+  }
+  function convert(root){
+    if(root.nodeType!==1&&root.nodeType!==3)return;
+    const el=root.nodeType===1?root:root.parentElement;
+    if(!el||el.closest(SKIP))return;
+    const nodes=[];
+    if(root.nodeType===3)nodes.push(root);
+    else{const w=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);while(w.nextNode())nodes.push(w.currentNode)}
+    for(const n of nodes){
+      const p=n.parentElement;
+      if(!p||p.closest(SKIP)||!p.closest('.math-inline,.math'))continue;
+      if(!n.nodeValue.includes('/'))continue;
+      const out=render(n.nodeValue);
+      if(out.length===1&&out[0].nodeType===3)continue;
+      const frag=document.createDocumentFragment();frag.append(...out);n.replaceWith(frag);
+    }
+  }
+  convert(document.body);
+  new MutationObserver(rs=>{for(const r of rs){if(r.type==='characterData')convert(r.target);else for(const n of r.addedNodes)convert(n)}}).observe(document.body,{childList:true,subtree:true,characterData:true});
+})();
 </script>
 </body>
 </html>
