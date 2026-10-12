@@ -223,6 +223,117 @@ svg text{direction:ltr;unicode-bidi:plaintext}
       ]
     };
     const topicHints={basics:'זהו את העצם או סוג הזווית.',lines:'סמנו את זוג הזוויות ואת הקשר ביניהן.',triangles:'בדקו סכום זוויות או אי־שוויון צלעות.',congruence:'רשמו נתון מול נתון ובדקו משפט חפיפה.',quads:'הפרידו בין הגדרה, תכונה ותנאי זיהוי.',polygons:'חשבו כמה משולשים מתקבלים.',circle:'זהו רדיוס, קוטר או חלק יחסי מ־360°.',area:'בחרו בסיס וגובה מאונך ורשמו יחידות.',similarity:'כתבו יחס בין גדלים מתאימים.',pythagoras:'זהו תחילה את היתר.',transform:'בדקו איזה שיעור משתנה ואיזה נשמר.',solids:'התחילו משטח הבסיס.'};
+    function genGeo(AQ){
+const H=s=>{let h=2166136261;for(const c of s){h^=c.charCodeAt(0);h=Math.imul(h,16777619)}return h>>>0};
+let seed=1;const R=()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296};
+const ri=(a,b)=>a+Math.floor(R()*(b-a+1)),pick=a=>a[Math.floor(R()*a.length)];
+const shuf=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(R()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+const M=s=>'\u200e'+s+'\u200e',P=(x,y)=>`\u200e(${x},${y})`;
+const T={};
+const D=['beginner','intermediate','advanced'];
+T.basics=[
+ ()=>{const a=ri(10,80);return[0,`מהי הזווית המשלימה ל־${a}° לזווית ישרה?`,`${90-a}°`,[`${180-a}°`,`${a}°`,`${90+a}°`],`זווית ישרה היא 90°, ולכן 90°-${a}°=${90-a}°.`,'משלימות לזווית ישרה, 90°.','חסרו את הזווית מ־90°.']},
+ ()=>{const a=ri(20,150);return[0,`מהי הזווית הצמודה לזווית של ${a}° על קו ישר?`,`${180-a}°`,[`${90-a>0?90-a:a+10}°`,`${a}°`,`${360-a}°`],`זוויות צמודות מרכיבות 180°: 180°-${a}°=${180-a}°.`,'על קו ישר סכום הזוויות 180°.','חסרו מ־180°.']},
+ ()=>{const a=pick([35,60,90,120,170,180,250]);const t=a<90?'חדה':a==90?'ישרה':a<180?'קהה':a==180?'שטוחה':'קעורה';return[0,`איזו זווית היא ${a}°?`,t,['חדה','ישרה','קהה','שטוחה','קעורה'].filter(x=>x!=t).slice(0,3),`${a}° היא זווית ${t}.`,'השוו ל־90° ול־180°.','חדה קטנה מ־90°, קהה בין 90° ל־180°.']},
+ ()=>{const a=ri(3,12);return[1,`M אמצע הקטע AB, ו־AM=${a} ס"מ. מה אורך AB?`,`${2*a}`,[`${a}`,`${a+2}`,`${a*a}`],`אמצע מחלק לשני קטעים שווים, לכן AB=2·${a}=${2*a}.`,'AM ו־MB שווים.','AB=AM+MB.']},
+ ()=>{const a=ri(2,9),b=ri(2,9);return[1,`B נמצאת על הקטע AC. AB=${a} ס"מ ו־BC=${b} ס"מ. מה אורך AC?`,`${a+b}`,[`${Math.abs(a-b)||a+b+1}`,`${a*b}`,`${a+b+1}`],`AC=AB+BC=${a}+${b}=${a+b}.`,'הקטעים נמשכים זה אחרי זה.','חברו את שני האורכים.']},
+ ()=>{const a=ri(20,170)&~1;return[1,`חוצה זווית מחלק זווית של ${a}° לשני חלקים. מה גודל כל חלק?`,`${a/2}°`,[`${a}°`,`${a*2}°`,`${180-a/2}°`],`חוצה יוצר שתי זוויות שוות: ${a}°÷2=${a/2}°.`,'שני חלקים שווים.','חלקו ב־2.']},
+];
+T.lines=[
+ ()=>{const a=ri(30,150);return[0,`שני ישרים נחתכים. אחת הזוויות ${a}°. מה הזווית הקודקודית לה?`,`${a}°`,[`${180-a}°`,`${90-a>0?90-a:a+20}°`,`${360-a}°`],'זוויות קודקודיות שוות.','קודקודיות מול זו.','אינן צמודות.']},
+ ()=>{const a=ri(30,150);return[0,`ישרים מקבילים נחתכים על ידי ישר שלישי. זווית מתאימה לזווית של ${a}° היא…`,`${a}°`,[`${180-a}°`,`${90}°`,`${a+10}°`],`זוויות מתאימות שוות כשהישרים מקבילים.`,'מתאימות באותו מקום בכל צומת.','שוות.']},
+ ()=>{const a=ri(40,140);return[1,`ישרים מקבילים נחתכים. זווית חד־צדדית אחת ${a}°. מהי החד־צדדית השנייה?`,`${180-a}°`,[`${a}°`,`${90}°`,`${360-a}°`],`חד־צדדיות משלימות ל־180°: ${180-a}°.`,'סכום חד־צדדיות 180°.','חסרו מ־180°.']},
+ ()=>{const a=ri(30,150);return[1,`ישרים מקבילים נחתכים. זווית מתחלפת לזווית של ${a}° היא…`,`${a}°`,[`${180-a}°`,`${a/2}°`,`${a+20}°`],'זוויות מתחלפות שוות כשהישרים מקבילים.','בצדדים מנוגדים של הישר החותך.','שוות.']},
+ ()=>{const x=ri(10,40);return[2,`ישרים מקבילים נחתכים. זוויות מתחלפות הן ${M('2x+10')} ו־${M('x+'+(x+10))}. מהו x?`.replace('x+'+(x+10),'x+'+(x+10)),`${x}`,[`${x+10}`,`${x-5}`,`${2*x}`],`מתחלפות שוות: 2x+10=x+${x+10}, לכן x=${x}.`,'שוות כי הישרים מקבילים.','פתרו את המשוואה.']},
+ ()=>{const a=ri(20,70);return[2,`שני ישרים מאונכים זה לזה. כמה מעלות בכל זווית ביניהם?`,'90°',['45°','180°','360°'],'ישרים מאונכים יוצרים זוויות ישרות.','הגדרת מאונכים.','90°.']},
+];
+T.triangles=[
+ ()=>{const a=ri(30,80),b=ri(30,80);return[0,`זוויות במשולש הן ${a}° ו־${b}°. מהי הזווית השלישית?`,`${180-a-b}°`,[`${a+b}°`,`${360-a-b}°`,`${90-a}°`],`180°-${a}°-${b}°=${180-a-b}°.`,'סכום זוויות משולש 180°.','חסרו שתי זוויות.']},
+ ()=>{const a=ri(20,80);return[0,`במשולש ישר זווית אחת הזוויות החדות היא ${a}°. מהי השנייה?`,`${90-a}°`,[`${180-a}°`,`${a}°`,`${90+a}°`],`90°-${a}°=${90-a}°.`,'יש זווית ישרה אחת.','שתי החדות מסתכמות ב־90°.']},
+ ()=>{const a=ri(25,80)&~1;return[1,`במשולש שווה שוקיים זווית הבסיס ${a}°. מהי זווית הקודקוד?`,`${180-2*a}°`,[`${180-a}°`,`${a}°`,`${90-a}°`],`180°-2·${a}°=${180-2*a}°.`,'שתי זוויות הבסיס שוות.','חסרו שתיים.']},
+ ()=>{const a=ri(30,80),b=ri(30,80);return[1,`זוויות פנימיות במשולש: ${a}° ו־${b}°. מהי הזווית החיצונית לזווית השלישית?`,`${a+b}°`,[`${180-a-b}°`,`${360-a-b}°`,`${a+b+10}°`],'חיצונית שווה לסכום שתי הפנימיות שאינן צמודות לה.','משפט הזווית החיצונית.','חברו a ו־b.']},
+ ()=>{const [a,b]=pick([[3,4],[5,7],[6,9],[4,10]]);const c=ri(a+b-3,a+b+3);const ok=c<a+b&&c>Math.abs(a-b);return[2,`האם אפשר ליצור משולש מצלעות ${a}, ${b}, ${c}?`,ok?'כן':'לא',['כן','לא'].filter(x=>x!=(ok?'כן':'לא')).concat(['תלוי בזוויות','רק אם ישר זווית']),`סכום שתי הצלעות הקטנות חייב להיות גדול מהגדולה. ${a}+${b}=${a+b}, ${ok?'וזה':'וזה לא'} גדול מ־${c}.`,'אי־שוויון המשולש.','השוו סכום לצלע השלישית.']},
+ ()=>{const s=ri(3,15);return[0,`משולש שווה צלעות, צלעו ${s} ס"מ. מה היקפו?`,`${3*s}`,[`${2*s}`,`${s*s}`,`${4*s}`],`3·${s}=${3*s}.`,'שלוש צלעות שוות.','כפלו ב־3.']},
+];
+T.congruence=[
+ ()=>{return[0,'שתי צלעות והזווית שביניהן שוות בשני משולשים. איזה משפט חפיפה?','צ.ז.צ',['צ.צ.צ','ז.צ.ז','צ.צ.ז'],'צלע־זווית־צלע, כשהזווית בין הצלעות.','הזווית נמצאת בין שתי הצלעות.','זה משפט אחד מהשלושה.']},
+ ()=>{return[0,'שלוש צלעות שוות בשני משולשים. מה אפשר להסיק?','המשולשים חופפים',['המשולשים דומים בלבד','הזוויות כולן 60°','אי אפשר להסיק'],'משפט צ.צ.צ.','שלוש צלעות קובעות משולש.','צ.צ.צ.']},
+ ()=>{const a=ri(3,15);return[0,`משולש ABC חופף למשולש DEF, AB=${a}. מה אורך DE?`,`${a}`,[`${a+1}`,`${2*a}`,`${a-1}`],'צלעות מתאימות בחפיפה שוות.','A↔D, B↔E.','אותו אורך.']},
+ ()=>{const a=ri(30,90);return[1,`ABC≅DEF, ∠B=${a}°. מה גודל ∠E?`,`${a}°`,[`${180-a}°`,`${90-a>0?90-a:a+10}°`,`${2*a}°`],'זוויות מתאימות שוות.','B↔E.','שוות.']},
+ ()=>{return[1,'בשני משולשים שתי זוויות והצלע שביניהן שוות. איזה משפט?','ז.צ.ז',['צ.ז.צ','צ.צ.צ','ז.ז.ז'],'זווית־צלע־זווית.','הצלע בין הזוויות.','ז.ז.ז אינו משפט חפיפה.']},
+ ()=>{return[2,'האם שלוש זוויות שוות בשני משולשים מבטיחות חפיפה?','לא',['כן','רק במשולש שווה צלעות','רק במשולש ישר זווית'],'גדלים שונים עם אותן זוויות, זה דמיון.','משולש גדול וקטן יכולים להיות עם אותן זוויות.','ז.ז.ז אינו מספיק.']},
+];
+T.quads=[
+ ()=>{const a=ri(40,130);return[0,`במקבילית אחת הזוויות ${a}°. מהי הזווית שממול?`,`${a}°`,[`${180-a}°`,`${90}°`,`${360-a}°`],'זוויות נגדיות במקבילית שוות.','נגדיות שוות.','צמודות משלימות ל־180°.']},
+ ()=>{const a=ri(40,130);return[0,`במקבילית אחת הזוויות ${a}°. מהי זווית סמוכה לה?`,`${180-a}°`,[`${a}°`,`${90}°`,`${360-a}°`],'זוויות סמוכות משלימות ל־180°.','סמוכות על אותו צד.','חסרו מ־180°.']},
+ ()=>{const a=ri(3,14);return[0,`ההיקף של מעוין הוא 4 כפול צלע. אם צלעו ${a} ס"מ, מה ההיקף?`,`${4*a}`,[`${2*a}`,`${a*a}`,`${3*a}`],`כל הצלעות שוות: 4·${a}=${4*a}.`,'ארבע צלעות שוות.','כפלו ב־4.']},
+ ()=>{const a=ri(40,120),b=ri(50,110),c=ri(60,100);const d=360-a-b-c;return[1,`שלוש זוויות במרובע: ${a}°, ${b}°, ${c}°. מהי הרביעית?`,`${d}°`,[`${180-a-b-c>0?180-a-b-c:d+10}°`,`${d+20}°`,`${d-10}°`],`סכום זוויות מרובע 360°: ${d}°.`,'סכום זוויות מרובע 360°.','חסרו שלוש זוויות.']},
+ ()=>{const a=ri(4,12),b=a+2*ri(1,5);return[1,`בטרפז בסיסים ${a} ו־${b}. מה אורך קטע האמצעים?`,`${(a+b)/2}`,[`${a+b}`,`${b-a}`,`${(b-a)/2}`],'קטע אמצעים שווה לממוצע הבסיסים.','ממוצע.','חצי הסכום.']},
+ ()=>{return[2,'איזה מרובע האלכסונים שלו מאונכים ושווים?','ריבוע',['מלבן','מעוין','טרפז'],'בריבוע האלכסונים שווים, חוצים זה את זה ומאונכים.','רק מרובע אחד מקיים את שניהם.','מלבן: שווים. מעוין: מאונכים.']},
+];
+T.polygons=[
+ ()=>{const n=ri(5,10);return[0,`מהו סכום הזוויות הפנימיות במצולע בעל ${n} צלעות?`,`${(n-2)*180}°`,[`${n*180}°`,`${(n-1)*180}°`,`${360}°`],`(${n}-2)·180°=${(n-2)*180}°.`,'חלקו למשולשים.','n-2 משולשים.']},
+ ()=>{const n=pick([3,4,5,6,8,9,10,12]);const a=(n-2)*180/n;return[1,`מהי כל זווית פנימית במצולע משוכלל בן ${n} צלעות?`,`${a}°`,[`${360/n}°`,`${a+10}°`,`${(n-2)*180}°`],`(${n}-2)·180/${n}=${a}°.`,'סכום חלקי מספר הזוויות.','סכום (n-2)·180.']},
+ ()=>{const n=ri(5,10);return[1,`כמה אלכסונים יש במצולע בעל ${n} צלעות?`,`${n*(n-3)/2}`,[`${n*(n-3)}`,`${n*(n-1)/2}`,`${n-3}`],`n(n-3)/2=${n*(n-3)/2}.`,'מכל קודקוד n-3 אלכסונים.','חלקו ב־2.']},
+ ()=>{const n=pick([3,4,5,6,8,9,10,12]);return[1,`מהי כל זווית חיצונית במצולע משוכלל בן ${n} צלעות?`,`${360/n}°`,[`${180-360/n}°`,`${180/n}°`,`${360}°`],`360°÷${n}=${360/n}°.`,'סכום חיצוניות 360°.','חלקו ב־n.']},
+ ()=>{const n=ri(5,12);return[2,`סכום הזוויות הפנימיות במצולע הוא ${(n-2)*180}°. כמה צלעות יש לו?`,`${n}`,[`${n+1}`,`${n-1}`,`${(n-2)*180/360}`].filter(x=>x!=`${n}`),`(n-2)·180=${(n-2)*180}, לכן n=${n}.`,'פתרו את המשוואה.','חלקו ב־180 והוסיפו 2.']},
+ ()=>{const k=pick([30,36,40,45,60,72]);return[2,`זווית חיצונית של מצולע משוכלל היא ${k}°. כמה צלעות יש לו?`,`${360/k}`,[`${180/k}`,`${360/k+1}`,`${360/k-1}`],`360÷${k}=${360/k}.`,'סכום החיצוניות 360°.','חלקו.']},
+];
+T.circle=[
+ ()=>{const r=ri(2,15);return[0,`הרדיוס של מעגל ${r} ס"מ. מהו הקוטר?`,`${2*r}`,[`${r}`,`${r+2}`,`${r*r}`],`קוטר=2r=${2*r}.`,'הקוטר כפול הרדיוס.','כפלו ב־2.']},
+ ()=>{const r=ri(2,12);return[1,`מה היקף מעגל ברדיוס ${r}?`,`${2*r}π`,[`${r*r}π`,`${r}π`,`${4*r}π`],`2πr=${2*r}π.`,'היקף=2πr.','הציבו.']},
+ ()=>{const r=ri(2,12);return[1,`מה שטח מעגל ברדיוס ${r}?`,`${r*r}π`,[`${2*r}π`,`${r}π`,`${r*r*2}π`],`πr²=${r*r}π.`,'שטח=πr².','ריבוע הרדיוס.']},
+ ()=>{const a=ri(20,160)&~1;return[1,`זווית היקפית נשענת על קשת. הזווית המרכזית על אותה קשת היא ${a}°. מה ההיקפית?`,`${a/2}°`,[`${a}°`,`${2*a}°`,`${180-a/2}°`],'היקפית חצי מהמרכזית.','על אותה קשת.','חלקו ב־2.']},
+ ()=>{return[0,'המשיק למעגל ורדיוס בנקודת ההשקה יוצרים זווית של…','90°',['45°','60°','180°'],'משיק מאונך לרדיוס בנקודת ההשקה.','תכונת משיק.','זווית ישרה.']},
+ ()=>{const a=pick([45,60,90,120,180]);const r=pick([6,12,18]);return[2,`זווית מרכזית ${a}° במעגל שהיקפו ${r*2}π. מה אורך הקשת?`.replace('?','.')+' ',`${r*2*a/360}π`,[`${r*2}π`,`${a}π`,`${r*2*a/180}π`].filter(x=>x!=`${r*2*a/360}π`),`היקף כפול ${a}/360.`,'חלק יחסי מההיקף.','a/360.'].map(x=>typeof x=='string'?x.trim():x)},
+];
+T.area=[
+ ()=>{const a=ri(3,15),b=ri(3,15);return[0,`מלבן ${a} על ${b}. מה השטח?`,`${a*b}`,[`${2*(a+b)}`,`${a+b}`,`${a*b*2}`],`${a}·${b}=${a*b}.`,'אורך כפול רוחב.','כפלו.']},
+ ()=>{const b=ri(2,12)*2,h=ri(3,12);return[0,`משולש בעל בסיס ${b} וגובה ${h}. מה השטח?`,`${b*h/2}`,[`${b*h}`,`${b+h}`,`${b*h/4}`],`½·${b}·${h}=${b*h/2}.`,'חצי בסיס כפול גובה.','חלקו ב־2.']},
+ ()=>{const b=ri(3,14),h=ri(3,10);return[1,`מקבילית בעלת בסיס ${b} וגובה ${h}. מה השטח?`,`${b*h}`,[`${b*h/2}`,`${b+h}`,`${2*(b+h)}`],'בסיס כפול גובה.','גובה מאונך.','כפלו.']},
+ ()=>{const a=ri(3,9),b=a+2*ri(1,4),h=ri(2,8)*2;return[1,`טרפז עם בסיסים ${a} ו־${b} וגובה ${h}. מה השטח?`,`${(a+b)*h/2}`,[`${(a+b)*h}`,`${a*b*h/2}`,`${(a+b)/2}`],`(${a}+${b})·${h}/2.`,'סכום בסיסים כפול גובה חלקי 2.','הציבו.']},
+ ()=>{const s=ri(3,14);return[1,`היקף ריבוע ${4*s}. מה שטחו?`,`${s*s}`,[`${4*s}`,`${2*s}`,`${s*s*2}`],`צלע ${s}, שטח ${s*s}.`,'מצאו צלע.','חלקו ב־4.']},
+ ()=>{const a=ri(2,8)*2,b=ri(2,8)*2;return[2,`אלכסוני מעוין ${a} ו־${b}. מה שטחו?`,`${a*b/2}`,[`${a*b}`,`${a+b}`,`${a*b/4}`],'שטח מעוין=מכפלת אלכסונים חלקי 2.','נוסחת אלכסונים.','חלקו ב־2.']},
+];
+T.similarity=[
+ ()=>{const k=ri(2,5),a=ri(3,9);return[0,`משולשים דומים ביחס ${k}:1. צלע במשולש הקטן ${a}. מה הצלע המתאימה בגדול?`,`${a*k}`,[`${a+k}`,`${a*k*k}`,`${a}`],'כפלו ביחס הדמיון.','יחס צלעות.','כפל.']},
+ ()=>{const k=ri(2,5);return[1,`יחס הדמיון הוא ${k}:1. מה יחס השטחים?`,`${k*k}:1`,[`${k}:1`,`${2*k}:1`,`${k+1}:1`],'יחס שטחים הוא ריבוע היחס.','k².','הרימו בריבוע.']},
+ ()=>{const k=ri(2,5),p=ri(4,12);return[0,`היקף משולש קטן ${p}, יחס הדמיון ${k}:1. מה היקף הגדול?`,`${p*k}`,[`${p*k*k}`,`${p+k}`,`${p}`],'יחס ההיקפים כיחס הדמיון.','כפלו.','k.']},
+ ()=>{const a=ri(2,6),k=ri(2,5),b=ri(3,9);return[1,`במשולשים דומים ${a} מתאים ל־${a*k}. מה מתאים ל־${b}?`,`${b*k}`,[`${b+k}`,`${b*a}`,`${b*k*k}`],'מצאו יחס דמיון.','k=הגדול חלקי הקטן.','כפלו.']},
+ ()=>{const h=ri(2,6),s=ri(3,6),S=s*ri(2,5);return[2,`מוט בגובה ${h} מטר מטיל צל ${s} מטר. באותו זמן עץ מטיל צל ${S}. מה גובה העץ?`,`${h*S/s}`,[`${h+S-s}`,`${h*S}`,`${S/h}`],'יחס גובה לצל קבוע.','משולשים דומים.','הכפלה ביחס.']},
+];
+T.pythagoras=[
+ ()=>{const [a,b,c]=pick([[3,4,5],[5,12,13],[8,15,17],[7,24,25],[6,8,10],[9,12,15]]);return[0,`ניצבי משולש ישר זווית ${a} ו־${b}. מה היתר?`,`${c}`,[`${a+b}`,`${b-a}`,`${Math.round(Math.sqrt(a*b))}`],`${a}²+${b}²=${a*a+b*b}, שורש ${c}.`,'משפט פיתגורס.','סכום ריבועי הניצבים.']},
+ ()=>{const [a,b,c]=pick([[3,4,5],[5,12,13],[8,15,17],[6,8,10],[9,12,15]]);return[1,`יתר ${c}, ניצב ${a}. מה הניצב השני?`,`${b}`,[`${c-a}`,`${c+a}`,`${b+1}`],`${c}²-${a}²=${b*b}.`,'חסרו ריבועים.','b²=c²-a².']},
+ ()=>{const [a,b,c]=pick([[3,4,5],[5,12,13],[8,15,17],[6,8,10]]);const w=pick([true,false]);const z=w?c:c+1;return[1,`האם צלעות ${a}, ${b}, ${z} יוצרות משולש ישר זווית?`,w?'כן':'לא',['כן','לא'],`${a}²+${b}²=${a*a+b*b}, ${z}²=${z*z}. ${w?'שווים':'לא שווים'}.`,'בדקו פיתגורס.','הצלע הארוכה היא היתר.']},
+ ()=>{const [a,b,c]=pick([[3,4,5],[5,12,13],[6,8,10],[9,12,15]]);return[1,`אלכסון מלבן ${a} על ${b}. מה אורכו?`,`${c}`,[`${a+b}`,`${c+1}`,`${a*b}`],`${a*a}+${b*b}=${c*c}.`,'האלכסון הוא יתר.','פיתגורס.']},
+ ()=>{const [a,b,c]=pick([[3,4,5],[5,12,13],[8,15,17]]);return[2,`סולם באורך ${c} נשען על קיר, ורגלו ${a} מטר מהקיר. לאיזה גובה הוא מגיע?`,`${b}`,[`${c-a}`,`${c+a}`,`${b+2}`],`${c}²-${a}²=${b*b}.`,'משולש ישר זווית.','היתר הוא הסולם.']},
+];
+T.transform=[
+ ()=>{const x=ri(1,8),y=ri(1,8);return[0,`מה השתקפות ${P(x,y)} בציר x?`,P(x,-y),[P(-x,y),P(-x,-y),P(y,x)],'השתקפות בציר x משנה את סימן y.','x נשאר.','y משתנה.']},
+ ()=>{const x=ri(1,8),y=ri(1,8);return[0,`מה השתקפות ${P(x,y)} בציר y?`,P(-x,y),[P(x,-y),P(-x,-y),P(y,x)],'השתקפות בציר y משנה את סימן x.','y נשאר.','x משתנה.']},
+ ()=>{const x=ri(1,8),y=ri(1,8),a=ri(1,5),b=ri(1,5);return[0,`הזזה של ${P(x,y)} ב־${a} ימינה ו־${b} למעלה. איפה הנקודה?`.replace('?','.'),P(x+a,y+b),[P(x-a,y+b),P(x+b,y+a),P(x+a,y-b)],'ימינה מוסיף ל־x. למעלה מוסיף ל־y.','x+a, y+b.','חברו.']},
+ ()=>{const x=ri(1,8),y=ri(1,8);return[1,`מה הנקודה אחרי סיבוב ${P(x,y)} ב־180° סביב הראשית?`,P(-x,-y),[P(x,-y),P(-x,y),P(y,-x)],'סיבוב 180° הופך את שני הסימנים.','שני הסימנים.','x ו־y שניהם.']},
+ ()=>{const k=ri(2,4),a=ri(2,6);return[1,`מגדילים צורה פי ${k}. אם שטחה היה ${a}, מה השטח החדש?`,`${a*k*k}`,[`${a*k}`,`${a+k}`,`${a*k*k*k}`],'שטח גדל פי k².','k².','כפלו.']},
+ ()=>{return[2,'איזו תכונה נשמרת בהשתקפות?','אורכי הצלעות',['כיוון הסדר של הקודקודים','מיקום הצורה','כיוון הצורה'],'אורכים וזוויות נשמרים.','התמרה איזומטרית.','הכיוון משתנה.']},
+];
+T.solids=[
+ ()=>{const a=ri(2,9);return[0,`מה נפח קובייה שצלעה ${a}?`,`${a**3}`,[`${6*a*a}`,`${3*a}`,`${a*a}`],`${a}³=${a**3}.`,'צלע בשלישית.','כפלו שלוש פעמים.']},
+ ()=>{const a=ri(2,9);return[1,`מה שטח הפנים של קובייה שצלעה ${a}?`,`${6*a*a}`,[`${a**3}`,`${4*a*a}`,`${12*a}`],`6·${a}²=${6*a*a}.`,'שש פאות.','כפלו שטח פאה ב־6.']},
+ ()=>{const a=ri(2,9),b=ri(2,8),c=ri(2,8);return[0,`מה נפח תיבה ${a}×${b}×${c}?`,`${a*b*c}`,[`${a+b+c}`,`${2*(a*b+b*c+a*c)}`,`${a*b}`],`${a}·${b}·${c}=${a*b*c}.`,'אורך·רוחב·גובה.','כפלו.']},
+ ()=>{const r=ri(2,6),h=ri(2,9);return[1,`מה נפח גליל r=${r}, h=${h}?`,`${r*r*h}π`,[`${2*r*h}π`,`${r*h}π`,`${r*r*h*2}π`],`πr²h=${r*r*h}π.`,'שטח בסיס כפול גובה.','πr²h.']},
+ ()=>{const r=ri(2,6),k=ri(1,3);const h=3*k;return[2,`מה נפח חרוט r=${r}, h=${h}?`,`${r*r*k}π`,[`${r*r*h}π`,`${r*r*h*3}π`,`${r*h}π`],`⅓πr²h=${r*r*k}π.`,'שליש מגליל.','⅓·π·r²·h.']},
+ ()=>{const n=pick([3,4,5,6]);return[1,`כמה פאות צדדיות יש לפריזמה שבסיסה מצולע בן ${n} צלעות?`,`${n}`,[`${n+1}`,`${n+2}`,`${2*n}`],'פאה צדדית לכל צלע בבסיס.','בסיס מצולע.','n.']},
+];
+const N=14;
+for(const t of Object.keys(T)){const arr=AQ[t];if(!arr)continue;seed=H(t+'g1');const seen=new Set(arr.map(q=>q[1]));let n=0,tries=0,i=0;
+ while(n<N&&tries<500){tries++;const f=T[t][i++%T[t].length];let r;try{r=f()}catch(e){continue}if(!r)continue;
+  let[d,q,ans,ds,ex,h1,h2]=r;if(seen.has(q))continue;const four=[ans,...ds.filter(x=>x!=ans)].slice(0,ds.length+1);const base=four.length>4?four.slice(0,4):four;
+  if(new Set(base).size!=base.length||base.length<2)continue;if(base.length==2&&!(ans=='כן'||ans=='לא'))continue;
+  seen.add(q);n++;const sh=shuf(base);arr.push([D[d],q,sh,sh.indexOf(ans),ex,h1,h2,'none',{}]);}}
+return AQ}
+
+genGeo(additionalQuestions);
     window.QUESTION_BANK=topics.flatMap(t=>[t.q,...extraQuestions[t.id]].map((q,i)=>({id:`${t.id}-${i+1}`,topic:t.id,difficulty:i<2?'beginner':i===2?'intermediate':'advanced',prompt:q[0],options:q[1],correctIndex:q[2],explanation:q[3],hint1:topicHints[t.id],hint2:'כתבו את הכלל המתאים והציבו בו את הנתונים.',visualType:i===0?({basics:'angle',lines:'parallel',triangles:'triangle',congruence:'congruence',quads:'quad',polygons:'polygon',circle:'circle',area:'area',similarity:'similarity',pythagoras:'rightTriangle',transform:'coordinates',solids:'solid'}[t.id]):'none',visualParams:{}}))).concat(Object.entries(additionalQuestions).flatMap(([topic,qs])=>qs.map((q,i)=>({id:`${topic}-rich-${i+1}`,topic,difficulty:q[0],prompt:q[1],options:q[2],correctIndex:q[3],explanation:q[4],hint1:q[5],hint2:q[6],visualType:q[7],visualParams:q[8]}))));
     let filter='all',current=null,practiceIndex=0,practiceScore=0,practiceAnswered=false,practiceBank=[],hintsUsed=0,questionHints=0,examState=null,examTimer=null;
     let appState={id:'main',profileName:'תלמיד/ה',answers:{},exams:[]};
@@ -918,26 +1029,33 @@ topics.find(t=>t.id==='area').concepts.push(['משולש במלבן עם בסי�
   return{summary:{answered:rows.length,correct:co,accuracy:at?Math.round(co/at*100):0,hints:hi},
    topics:topics.map(t=>{const qs=window.QUESTION_BANK.filter(q=>q.topic===t.id),sn=rows.filter(r=>r.topic===t.id),a=sn.reduce((n,x)=>n+x.attempts,0),c=sn.reduce((n,x)=>n+x.correct,0),h=sn.reduce((n,x)=>n+x.hints,0);return{id:t.id,title:t.title,total:qs.length,seen:sn.length,wrong:a-c,tries:0,hints:h,acc:a?Math.round(c/a*100):null}}),
    seen:rows.map(r=>r.id),weak,exams:(appState.exams||[]).slice(0,5).map(e=>({date:e.date,pct:e.score}))}},
+ counts(){const r=Object.values(appState.answers||{});return{ans:r.reduce((n,x)=>n+x.attempts,0),ok:r.reduce((n,x)=>n+x.correct,0)}},
  start(p){document.querySelectorAll('dialog[open]').forEach(d=>d.close());const qs=p.questionIds.map(id=>window.QUESTION_BANK.find(q=>q.id===id)).filter(Boolean);if(!qs.length)return;
   openTopic(qs[0].topic);activateTab('practice');practiceBank=qs.map(randomizedQ);practiceIndex=0;practiceScore=0;practiceAnswered=false;hintsUsed=0;renderPractice()}};
   const lv={'בסיסי':0,'ביניים':1,'מתקדם':2};
   const need=t=>t.wrong*3+t.tries*2+t.hints;
   /* ---- device side: automatic sync ---- */
   let last='';
-  function snap(){try{return {v:1,app:A.app,updatedAt:new Date().toISOString(),...A.snap()}}catch(e){return null}}
+  function snap(){try{return {v:1,app:A.app,updatedAt:new Date().toISOString(),...A.snap(),game:gameSnap()}}catch(e){return null}}
   async function push(force){const c=sCode();if(!c)return;const s=snap();if(!s)return;const body=JSON.stringify({...s,updatedAt:0});if(!force&&body===last)return;last=body;
     const r=await call('/sync',{code:c,app:A.app,snap:s});if(!r)last=''}
   function beacon(){const c=sCode();if(!c)return;const s=snap();if(!s)return;const p=JSON.stringify({code:c,app:A.app,snap:s});try{for(const e of EP)navigator.sendBeacon(e+'/sync',new Blob([p],{type:'text/plain'}))}catch(_){}}
-  /* ---- plan building ---- */
-  function buildPlan(s,max=9){
+  /* ---- plan building: questions per topic follow the topic's weakness weight ---- */
+  function buildPlan(s,max=12){
     const qs=A.allQs(),seen=new Set(s.seen||[]),weakMap=Object.fromEntries((s.weak||[]).map(w=>[w.id,w]));
-    let ts=[...(s.topics||[])].map(t=>({...t,need:need(t)})).sort((a,b)=>b.need-a.need||(a.acc??101)-(b.acc??101)||a.seen-b.seen);
-    let tg=ts.filter(t=>t.need>0).slice(0,3);if(!tg.length)tg=ts.filter(t=>t.seen<t.total).slice(0,2);if(!tg.length)tg=ts.slice(0,2);
-    const per=Math.max(2,Math.ceil(max/Math.max(1,tg.length))),ids=[];
-    tg.forEach(t=>{const pool=qs.filter(q=>q.topic===t.id).map(q=>({q,w:weakMap[q.id]}));
+    const ts=[...(s.topics||[])].map(t=>({...t,need:need(t)}));
+    let tg=ts.filter(t=>t.need>0).sort((a,b)=>b.need-a.need).slice(0,5);
+    let mode='weak';
+    if(!tg.length){mode='fresh';tg=ts.filter(t=>t.seen<t.total).sort((a,b)=>a.seen-b.seen).slice(0,3);if(!tg.length)tg=ts.slice(0,3)}
+    const wt=tg.map(t=>mode==='weak'?t.need:1),sum=wt.reduce((a,b)=>a+b,0)||1;
+    let al=tg.map((t,i)=>Math.max(2,Math.floor(max*wt[i]/sum)));
+    while(al.reduce((a,b)=>a+b,0)>max){const k=al.indexOf(Math.max(...al));if(al[k]<=2)break;al[k]--}
+    while(al.reduce((a,b)=>a+b,0)<max){let k=0;wt.forEach((w,i)=>{if(w/al[i]>wt[k]/al[k])k=i});al[k]++}
+    const ids=[],alloc=[];
+    tg.forEach((t,i)=>{const pool=qs.filter(q=>q.topic===t.id).map(q=>({q,w:weakMap[q.id]}));
       pool.sort((a,b)=>{const sa=a.w?(a.w.wrong*3+a.w.tries*2+a.w.hints+10):(seen.has(a.q.id)?0:5),sb=b.w?(b.w.wrong*3+b.w.tries*2+b.w.hints+10):(seen.has(b.q.id)?0:5);return sb-sa||(lv[a.q.level]??1)-(lv[b.q.level]??1)});
-      pool.slice(0,per).forEach(x=>ids.push(x.q.id))});
-    return {title:'חיזוק אישי: '+tg.map(t=>t.title).join(' · '),questionIds:ids.slice(0,max),topics:tg.map(t=>t.id)};
+      const take=pool.slice(0,al[i]).map(x=>x.q.id);take.forEach(x=>ids.push(x));alloc.push({id:t.id,title:t.title,n:take.length,pct:Math.round(wt[i]/sum*100),wrong:t.wrong,hints:t.hints,acc:t.acc})});
+    return {title:(mode==='weak'?'חיזוק אישי: ':'תרגול מאוזן: ')+tg.map(t=>t.title).join(' · '),questionIds:ids,topics:tg.map(t=>t.id),alloc,mode};
   }
   /* ---- teacher UI ---- */
   if(!document.getElementById('ts-css')){const st=document.createElement('style');st.id='ts-css';st.textContent=`.ts{direction:rtl;font-family:inherit;line-height:1.5}.ts *{box-sizing:border-box}.ts .tc{border:1px solid rgba(127,127,127,.35);border-radius:14px;padding:14px;margin:10px 0;background:rgba(127,127,127,.08)}.ts h3{margin:0 0 8px;font-size:1.1em}.ts .tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px}.ts .tile{text-align:center;border-radius:12px;padding:8px;background:rgba(127,127,127,.12)}.ts .tile b{display:block;font-size:1.4em}.ts .row{display:grid;grid-template-columns:minmax(90px,1.3fr) 2fr 44px;gap:8px;align-items:center;margin:7px 0;font-size:.92em}.ts .bar{height:10px;border-radius:6px;background:rgba(127,127,127,.25);overflow:hidden}.ts .bar i{display:block;height:100%;border-radius:6px}.ts .tag{display:inline-block;border-radius:999px;padding:1px 9px;font-size:.8em;border:1px solid rgba(127,127,127,.5)}.ts button,.ts input{font:inherit;border-radius:10px;border:1px solid rgba(127,127,127,.5);padding:9px 13px;background:transparent;color:inherit}.ts button.go{background:#1f7a5c;color:#fff;border-color:#1f7a5c;font-weight:700;cursor:pointer}.ts button{cursor:pointer}.ts small{opacity:.8}.ts .wq{border-top:1px solid rgba(127,127,127,.25);padding:7px 0;font-size:.9em}.ts .m{direction:ltr;unicode-bidi:isolate;display:inline-block}`;document.head.append(st)}
@@ -972,8 +1090,40 @@ ${(s.weak||[]).length?`<div class="tc"><h3>שאלות בעייתיות אחרו�
     if(document.getElementById('tsBanner'))return;const b=document.createElement('div');b.id='tsBanner';b.className='ts';b.style.cssText='position:fixed;top:8px;right:8px;left:8px;z-index:2000;background:#1f7a5c;color:#fff;border-radius:14px;padding:12px;box-shadow:0 6px 24px rgba(0,0,0,.3);display:flex;gap:10px;align-items:center;flex-wrap:wrap';
     b.innerHTML=`<span style="flex:1;min-width:180px"><b>המורה הכין לך מסלול חיזוק</b><br><small>${esc(p.title||'')} · ${p.questionIds.length} שאלות</small></span><button id="tsGo" style="background:#fff;color:#1f7a5c;font-weight:700">התחלה</button><button id="tsX" style="color:#fff">אחר כך</button>`;document.body.append(b);
     b.querySelector('#tsGo').onclick=()=>{localStorage.setItem(SEEN+A.app,p.sentAt);b.remove();A.start(p)};b.querySelector('#tsX').onclick=()=>{b.remove()}}
-  window.liveStats={render,push,buildPlan,snap,personal:()=>{const s=snap();return s?buildPlan(s):null},startPlan:p=>A.start(p)};
-  window.addEventListener('load',()=>{setTimeout(()=>{push(true);checkPlan()},2500)});
+  /* ---- gamification: streak, points, daily 10-minute goal (shared by both apps on this device) ---- */
+  const GK='avichai-game-v1',GOAL=600;let lastAct=Date.now();
+  const f2=d=>d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+  const rdG=()=>{let o={};try{o=JSON.parse(localStorage.getItem(GK))||{}}catch(_){}return {points:0,days:{},base:{},...o}};
+  const mut=fn=>{const g=rdG();fn(g);try{localStorage.setItem(GK,JSON.stringify(g))}catch(_){}return g};
+  const dayOf=(g,k=f2(new Date()))=>g.days[k]||(g.days[k]={secs:0,ans:0,ok:0,done:0});
+  const streakOf=g=>{let n=0;const d=new Date();const t=g.days[f2(d)];if(!(t&&t.secs>=GOAL))d.setDate(d.getDate()-1);for(;;){const x=g.days[f2(d)];if(x&&x.secs>=GOAL){n++;d.setDate(d.getDate()-1)}else break}return n};
+  const levelOf=p=>Math.floor(p/150)+1;
+  const lvName=n=>['מתחיל','סקרן','חריץ','מתמיד','חד','מומחה','אלוף','גאון'][Math.min(n-1,7)];
+  function gameSnap(){const g=rdG(),t=g.days[f2(new Date())]||{secs:0,ans:0,ok:0},days=[];for(let i=0;i<14;i++){const d=new Date();d.setDate(d.getDate()-i);const x=g.days[f2(d)];days.push({d:f2(d),m:x?Math.floor(x.secs/60):0})}return{streak:streakOf(g),points:g.points,level:levelOf(g.points),today:{m:Math.floor(t.secs/60),goal:GOAL/60,ans:t.ans,ok:t.ok},days}}
+  let toastT;const toast=txt=>{let b=document.getElementById('gmToast');if(!b){b=document.createElement('div');b.id='gmToast';b.className='ts';b.style.cssText='position:fixed;bottom:64px;right:12px;left:12px;max-width:340px;margin:auto;z-index:2100;background:#1f7a5c;color:#fff;border-radius:14px;padding:12px;text-align:center;font-weight:700;box-shadow:0 6px 24px rgba(0,0,0,.3)';document.body.append(b)}b.textContent=txt;b.style.display='block';clearTimeout(toastT);toastT=setTimeout(()=>b.style.display='none',4000)};
+  function chip(){let c=document.getElementById('gmChip');if(!c){c=document.createElement('button');c.id='gmChip';c.className='ts';c.type='button';c.style.cssText='position:fixed;bottom:12px;right:12px;z-index:1000;padding:8px 12px;border-radius:999px;border:1px solid #d9a400;background:#fff8dc;color:#4a3800;font:700 13px Arial;cursor:pointer;direction:rtl';c.onclick=openGame;document.body.append(c)}
+    const s=gameSnap();c.textContent=`🔥 ${s.streak} · ⭐ ${s.points} · ${Math.min(s.today.m,s.today.goal)} מתוך ${s.today.goal} דק׳`}
+  function overlay(html){document.getElementById('gmOv')?.remove();const o=document.createElement('div');o.id='gmOv';o.className='ts';o.style.cssText='position:fixed;inset:0;z-index:2200;background:rgba(0,0,0,.55);display:flex;align-items:center;justify-content:center;padding:12px';o.innerHTML=`<div style="background:var(--paper,#fff);color:var(--ink,#123);max-width:460px;width:100%;max-height:92vh;overflow:auto;border-radius:20px;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.4)"><div style="text-align:left"><button id="gmX" aria-label="סגירה">×</button></div>${html}</div>`;document.body.append(o);o.querySelector('#gmX').onclick=()=>o.remove();o.addEventListener('click',e=>{if(e.target===o)o.remove()});return o}
+  function openGame(){const s=gameSnap(),pct=Math.min(100,Math.round(s.today.m/s.today.goal*100)),lv=s.level,toNext=150-(s.points%150);
+    const dots=s.days.slice(0,7).reverse().map(d=>`<span title="${d.d}" style="display:inline-block;width:30px;height:30px;line-height:30px;border-radius:50%;text-align:center;font-size:.8em;margin:2px;background:${d.m>=s.today.goal?'#1f7a5c':d.m>0?'#e0a100':'rgba(127,127,127,.3)'};color:#fff">${d.m}</span>`).join('');
+    const o=overlay(`<div class="ts"><h3>היעד היומי: 10 דקות</h3><div class="bar" style="height:16px"><i style="width:${pct}%;background:#1f7a5c"></i></div><p><b>${Math.min(s.today.m,s.today.goal)}</b> מתוך ${s.today.goal} דקות היום ${s.today.m>=s.today.goal?'· היעד הושלם! 🎉':''}</p>
+<div class="tiles"><div class="tile"><b>🔥 ${s.streak}</b>ימים ברצף</div><div class="tile"><b>⭐ ${s.points}</b>נקודות</div><div class="tile"><b>${lv}</b>רמה: ${lvName(lv)}</div></div>
+<p><small>עוד ${toNext} נקודות לרמה הבאה. נקודות: 10 על תשובה נכונה בניסיון ראשון, 2 על ניסיון, 20 בונוס על השלמת היעד היומי. הזמן נספר רק כשעובדים בפועל.</small></p><div>${dots}</div><small>דקות ב-7 הימים האחרונים</small>
+<div style="margin-top:12px"><button class="go" id="gmGo" style="width:100%;font-size:1.1em">▶ 10 דקות עכשיו</button></div></div>`);
+    o.querySelector('#gmGo').onclick=()=>{o.remove();openWeak(true)}}
+  function gameTick(){if(document.hidden)return;const now=Date.now();
+    mut(g=>{const d=dayOf(g);if(now-lastAct<45000){const was=d.secs;d.secs++;if(was<GOAL&&d.secs>=GOAL&&!d.done){d.done=1;g.points+=20;setTimeout(()=>toast('🎉 היעד היומי הושלם! +20 נקודות. רצף: '+streakOf(g)+' ימים'),0)}}
+      if(+(g.tick||0)%2===0||true){let c;try{c=A.counts()}catch(_){c=null}if(c){const b=g.base[A.app];if(!b||c.ans<b.ans||c.ok<b.ok)g.base[A.app]=c;else{const da=c.ans-b.ans,dk=c.ok-b.ok;if(da>0){const pts=dk*10+(da-dk)*2;g.points+=pts;d.ans+=da;d.ok+=dk;lastAct=now;g.base[A.app]=c;setTimeout(()=>toast(dk>0?`+${pts} נקודות ⭐`:`+${pts} נקודות, ממשיכים!`),0)}}}}});
+    chip()}
+  ['pointerdown','keydown','scroll','touchstart'].forEach(ev=>document.addEventListener(ev,()=>{lastAct=Date.now()},{passive:true,capture:true}));
+  setInterval(gameTick,1000);
+  /* ---- weak-topics practice sheet ---- */
+  function openWeak(auto){const s=snap();if(!s)return;const p=buildPlan(s);
+    const rows=p.alloc.map(a=>`<div class="row"><span>${esc(a.title)}<br><small>${a.wrong?a.wrong+' טעויות':'טרם תורגל'}${a.hints?' · '+a.hints+' רמזים':''}</small></span><div class="bar"><i style="width:${Math.max(8,a.pct)}%;background:${p.mode==='weak'?'#d1495b':'#2f9e6f'}"></i></div><b>${a.n}</b></div>`).join('');
+    const o=overlay(`<div class="ts"><h3>תרגול נושאים שאני מתקשה בהם</h3><p>${p.mode==='weak'?'המערכת בדקה את הטעויות, הניסיונות החוזרים והרמזים שלך. ככל שנושא חלש יותר, יש בו יותר שאלות בדף התרגול המספר משמאל לכל נושא הוא מספר השאלות שלו.':'עדיין אין מספיק טעויות כדי לזהות חולשות, אז זה דף מאוזן מנושאים שטרם תורגלו.'}</p>${rows}<p><small>${p.questionIds.length} שאלות · בערך 10 דקות</small></p><button class="go" id="wkGo" style="width:100%;font-size:1.1em">התחלת דף התרגול</button></div>`);
+    o.querySelector('#wkGo').onclick=()=>{o.remove();A.start(p)};}
+  window.liveStats={render,push,buildPlan,snap,openWeak,openGame,personal:()=>{const s=snap();return s?buildPlan(s):null},startPlan:p=>A.start(p)};
+  window.addEventListener('load',()=>{chip();setTimeout(()=>{push(true);checkPlan();if(/[?&]go=weak/.test(location.search))openWeak(true)},2500)});
   setInterval(()=>{if(!document.hidden){push();}},30000);setInterval(()=>{if(!document.hidden)checkPlan()},90000);
   document.addEventListener('visibilitychange',()=>{if(document.hidden)beacon()});window.addEventListener('pagehide',beacon);
 })();
@@ -981,7 +1131,9 @@ ${(s.weak||[]).length?`<div class="tc"><h3>שאלות בעייתיות אחרו�
 (()=>{const $$=s=>document.querySelector(s);const tools=$$('.tools');const b=document.createElement('button');b.className='ghost';b.id='teacherBtn';b.textContent='מצב מורה';tools.insertBefore(b,$$('#examBtn'));
 const dlg=document.createElement('dialog');dlg.id='teacherDialog';dlg.innerHTML='<div class="modal-head"><div class="modal-title"><b>מצב מורה · נתוני אביחי</b></div><button class="close" id="teacherClose" aria-label="סגירה">×</button></div><div class="modal-body" id="teacherBody"></div>';document.body.append(dlg);
 b.onclick=()=>{dlg.showModal();liveStats.render($$('#teacherBody'))};$$('#teacherClose').onclick=()=>dlg.close();
-const _rp=renderProgress;renderProgress=function(){_rp();const box=$$('#progressBody'),p=liveStats.personal();if(!p||!p.questionIds.length)return;const s=document.createElement('section');s.className='lesson';s.style.marginTop='14px';s.innerHTML='<h3>חיזוק אישי</h3><p class="muted">מסלול שנבנה מהטעויות והרמזים שלך: '+p.title.replace('חיזוק אישי: ','')+' ('+p.questionIds.length+' שאלות).</p><button class="primary" id="personalPath">התחלת מסלול חיזוק אישי</button>';box.prepend(s);$$('#personalPath').onclick=()=>liveStats.startPlan(p)}})();
+const _rp=renderProgress;renderProgress=function(){_rp();const box=$$('#progressBody'),p=liveStats.personal();if(!p||!p.questionIds.length)return;const s=document.createElement('section');s.className='lesson';s.style.marginTop='14px';s.innerHTML='<h3>נקודות חולשה</h3><p class="muted">דף תרגול שנבנה מהטעויות והרמזים שלך: '+p.title.replace(/^[^:]*: /,'')+' ('+p.questionIds.length+' שאלות).</p><button class="primary" id="personalPath">תרגול נושאים שאני מתקשה בהם</button>';box.prepend(s);$$('#personalPath').onclick=()=>{$$('#progressDialog').close();liveStats.openWeak()}}})();
+
+(()=>{const h=document.querySelector('.hero-actions');if(h){const b=document.createElement('button');b.className='ghost';b.id='weakBtn';b.textContent='תרגול נושאים שאני מתקשה בהם';b.onclick=()=>liveStats.openWeak();h.append(b)}const t=document.querySelector('.tools'),b2=document.createElement('button');b2.className='ghost';b2.textContent='נקודות חולשה';b2.onclick=()=>liveStats.openWeak();t.insertBefore(b2,document.getElementById('examBtn'))})();
 </script>
 <script src="mock-tests.js"></script></body>
 </html>
