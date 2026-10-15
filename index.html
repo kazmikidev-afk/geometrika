@@ -1169,7 +1169,7 @@ function dailyStats(){const rows=Object.values(appState.answers||{});return topi
 function buildDailySet(){
  const st=Object.fromEntries(dailyStats().map(d=>[d.id,d]));
  const rng=dailyRng([...dateKey()].reduce((a,c)=>(a*31+c.charCodeAt(0))>>>0,7));
- const fd=feedData(),hw=new Set(fd.homeworkTopics||[]),ft=feedTest(),tt=new Set(ft?(ft.topics||[]):[]);
+ const fd=feedData(),hw=new Set(fd.homeworkTopics||[]),ft=feedTest(),tt=new Set(ft?[...(ft.topics||[]),...(ft.suggestedTopics||[])]:[]);
  appState.daily=appState.daily||{done:{},streak:0,last:null,used:[]};
  const used=new Set((appState.daily.used||[]).flatMap(u=>u.ids));
  const weights=topics.filter(t=>(st[t.id]?.total||0)>0).map(t=>{let d=st[t.id]||{need:0};let w=1+(d.need||0);if(hw.has(t.id))w*=3;if(tt.has(t.id))w*=4;return{id:t.id,w}});
